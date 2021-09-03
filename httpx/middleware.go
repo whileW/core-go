@@ -9,6 +9,7 @@ import (
 	"runtime"
 )
 
+// panic处理
 func RecoverHandler(c *gin.Context) {
 	defer func() {
 		if err := recover(); err != nil {

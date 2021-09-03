@@ -73,6 +73,7 @@ func (l *Loger)Infow(msg string, keysAndValues ...interface{})  {
 func (l *Loger)Info(args ...interface{})  {
 	logrus.Info(args...)
 }
+//todo 增加堆栈信息
 func (l *Loger)Errorw(msg string, keysAndValues ...interface{})  {
 	e := l.handWith(keysAndValues...)
 	if e != nil {
