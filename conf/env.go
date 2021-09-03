@@ -10,6 +10,8 @@ func initEnv(config *Config) {
 	config.SysSetting.HttpAddr = os.Getenv("HTTPADDR")
 	config.SysSetting.RpcAddr = os.Getenv("RPCADDR")
 	config.SysSetting.Host = os.Getenv("HOST")
+	config.SysSetting.SystemName = os.Getenv("SYSTEMNAME")
 
 	config.SysSetting.ConfFrom = utils.IF(os.Getenv("CONFFROM")=="","file",os.Getenv("CONFFROM")).(string)
+	config.SysSetting.SetDefault()
 }

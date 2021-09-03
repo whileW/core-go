@@ -14,7 +14,7 @@ import (
 
 func initNacos(config *Config) {
 	var (
-		data_id = os.Getenv("NACOSDATAID")
+		data_id = utils.IF(os.Getenv("NACOSDATAID") == "",config.SysSetting.SystemName,os.Getenv("NACOSDATAID")).(string)
 		server_addr = os.Getenv("NACOSADDR")
 		env     = utils.IF(config.SysSetting.Env != "release","debug",config.SysSetting.Env).(string)
 	)
@@ -23,7 +23,7 @@ func initNacos(config *Config) {
 	var changeData = func(confContent string) {
 		s := map[string]interface{}{}
 		if err := json.Unmarshal([]byte(confContent),&s);err != nil{
-			//log.GetLoger().Errorw("nacos 序列化配置失败","content",confContent,"err",err.Error())
+			fmt.Println(fmt.Sprintf("nacos序列化配置失败:content:%s,err:%v",confContent,err))
 			return
 		}
 		fmt.Println("nacos config changed")

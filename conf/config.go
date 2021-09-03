@@ -22,9 +22,6 @@ func InitConfg() *Config {
 		//acm配置中心
 		initNacos(&conf)
 	}
-
-	//设置默认值
-	conf.SysSetting.SetDefault()
 	return &conf
 }
 
@@ -90,21 +87,21 @@ func (c *Config)setSysSetting(k string,v interface{})  {
 		if val,ok := v.(string);ok {
 			c.SysSetting.Env = val
 		}
-		break
 	case "HTTPADDR":
 		if val,ok := v.(int);ok {
 			c.SysSetting.HttpAddr = strconv.Itoa(val)
 		}
-		break
 	case "RPCADDR":
 		if val,ok := v.(int);ok {
 			c.SysSetting.RpcAddr = strconv.Itoa(val)
 		}
-		break
 	case "HOST":
 		if val,ok := v.(string);ok {
 			c.SysSetting.Host = val
 		}
-		break
+	case "SYSTEMNAME":
+		if val,ok := v.(string);ok {
+			c.SysSetting.SystemName = val
+		}
 	}
 }

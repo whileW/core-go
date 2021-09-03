@@ -2,6 +2,7 @@ package conf
 
 import (
 	"fmt"
+	"github.com/whileW/core-go/utils"
 )
 
 //todo 手动增加配置   conf.GetConf().Add()|.AddChild()
@@ -32,6 +33,8 @@ type sysSetting struct {
 	RpcAddr 		string
 	//本机ip
 	Host 			string
+	//系统名称
+	SystemName 		string
 	//从哪里读取配置		- 默认file,可选值file、acm(阿里配置中心)
 	ConfFrom		string
 }
@@ -40,6 +43,12 @@ type sysSetting struct {
 func (s *sysSetting)SetDefaultEnv() {
 	if s.Env == "" {
 		s.Env = "debug"
+	}
+}
+//设置默认系统名称
+func (s *sysSetting)SetDefaultSystemName() {
+	if s.SystemName == "" {
+		s.SystemName = "core"
 	}
 }
 //设置默认http监听地址
@@ -62,6 +71,7 @@ func (s *sysSetting)SetDefaultHost()  {
 }
 //设置默认值
 func (s *sysSetting)SetDefault()  {
+	s.SetDefaultSystemName()
 	s.SetDefaultEnv()
 	s.SetDefaultHttpAddr()
 	s.SetDefaultRpcAddr()
@@ -110,7 +120,8 @@ func (s *Settings)GetIntd(key string,d int) int {
 	return s.Getd(key,d).(int)
 }
 func (s *Settings)GetStringd(key string,d string) string {
-	return s.Getd(key,d).(string)
+	v := s.Getd(key,d).(string)
+	return utils.IF(v == "",d,v).(string)
 }
 func (s *Settings)GetBoold(key string,d bool) bool {
 	return s.Getd(key,d).(bool)
@@ -118,7 +129,7 @@ func (s *Settings)GetBoold(key string,d bool) bool {
 func (s *Settings)GetChildd(key string) *Settings {
 	v := s.Getd(key,nil)
 	if v == nil {
-		return nil
+		return &Settings{}
 	}
 	return v.(*Settings)
 }
