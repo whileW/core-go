@@ -21,16 +21,8 @@ func init()  {
 	}
 	//设置输出
 	//设置级别
-	switch conf.GetConf().SysSetting.Env {
-	case "debug":
-		logrus.SetOutput(os.Stdout)
-		logrus.SetLevel(logrus.InfoLevel)
-	case "release":
-		logrus.SetLevel(logrus.InfoLevel)
-	default:
-		logrus.SetOutput(os.Stdout)
-		logrus.SetLevel(logrus.InfoLevel)
-	}
+	logrus.SetOutput(os.Stdout)
+	logrus.SetLevel(logrus.InfoLevel)
 }
 
 func get_log_setting() *conf.Settings {
