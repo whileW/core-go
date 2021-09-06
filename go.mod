@@ -8,7 +8,7 @@ require (
 	github.com/nacos-group/nacos-sdk-go v1.0.8
 	github.com/prometheus/client_golang v1.11.0
 	github.com/sirupsen/logrus v1.8.1
-	github.com/spf13/viper v1.8.1
+	github.com/spf13/viper v1.7.1
 	gorm.io/driver/mysql v1.1.2
 	gorm.io/driver/sqlserver v1.0.8
 	gorm.io/gorm v1.21.14
