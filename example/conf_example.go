@@ -10,6 +10,6 @@ import (
 func main()  {
 	c := conf.GetConf()
 	fmt.Println(c)
-	fmt.Println(c.Setting.GetStringd("test",""))
+	fmt.Println(c.Setting.GetStringd("HTTPADDR",""))
 	time.Sleep(time.Second*60)
 }

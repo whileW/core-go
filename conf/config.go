@@ -88,9 +88,7 @@ func (c *Config)setSysSetting(k string,v interface{})  {
 			c.SysSetting.Env = val
 		}
 	case "HTTPADDR":
-		if val,ok := v.(int);ok {
-			c.SysSetting.HttpAddr = strconv.Itoa(val)
-		}
+		c.SysSetting.HttpAddr = v.(string)
 	case "RPCADDR":
 		if val,ok := v.(int);ok {
 			c.SysSetting.RpcAddr = strconv.Itoa(val)

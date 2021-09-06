@@ -5,7 +5,7 @@ import (
 	"github.com/whileW/core-go/conf"
 	"os"
 )
-
+//todo 集成loki
 func init()  {
 	var (
 		format = get_log_setting().GetStringd("format","json")
@@ -26,7 +26,7 @@ func init()  {
 		logrus.SetOutput(os.Stdout)
 		logrus.SetLevel(logrus.InfoLevel)
 	case "release":
-		logrus.SetLevel(logrus.ErrorLevel)
+		logrus.SetLevel(logrus.InfoLevel)
 	default:
 		logrus.SetOutput(os.Stdout)
 		logrus.SetLevel(logrus.InfoLevel)
