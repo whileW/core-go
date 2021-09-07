@@ -57,10 +57,12 @@ func DisableRespBodyLog() gin.HandlerFunc {
 }
 
 //gin请求日志中间件
+//todo req_id
 func EnableGinLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		loger := log.GetLoger()
 		start := time.Now()
+		loger.WithKV("module","reqlog")
 		loger.WithKV("req_time",start)
 		loger.WithKV("client_ip",c.ClientIP())
 		loger.WithKV("req_method",c.Request.Method)
