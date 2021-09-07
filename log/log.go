@@ -3,26 +3,23 @@ package log
 import (
 	"github.com/sirupsen/logrus"
 	"github.com/whileW/core-go/conf"
+	"github.com/whileW/core-go/log/loki"
 	"os"
 )
 //todo 集成loki
 func init()  {
-	var (
-		format = get_log_setting().GetStringd("format","json")
-	)
 	//设置日志format
-	switch format {
-	case "json":
-		logrus.SetFormatter(&logrus.JSONFormatter{})
-	case "text":
-		logrus.SetFormatter(&logrus.TextFormatter{})
-	default:
-		logrus.SetFormatter(&logrus.JSONFormatter{})
-	}
+	logrus.SetFormatter(&logrus.JSONFormatter{})
 	//设置输出
 	//设置级别
-	logrus.SetOutput(os.Stdout)
 	logrus.SetLevel(logrus.InfoLevel)
+
+	if conf.GetConf().SysSetting.Env == "debug" {
+		logrus.SetOutput(os.Stdout)
+	}
+	if get_log_setting().GetBoold("loki",false){
+		loki.SetLokiOutPut()
+	}
 }
 
 func get_log_setting() *conf.Settings {

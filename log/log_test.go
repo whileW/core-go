@@ -2,7 +2,9 @@ package log
 
 import (
 	"github.com/sirupsen/logrus"
+	"github.com/whileW/core-go/log/loki"
 	"testing"
+	"time"
 )
 
 func TestLogLevel(t *testing.T)  {
@@ -17,4 +19,13 @@ func TestLogLevel(t *testing.T)  {
 
 func TestLogPrint(t *testing.T)  {
 	GetLoger().Infow("test","info","信息",1,"test")
+}
+
+func TestSetLokiOutPut(t *testing.T) {
+	loki.SetLokiOutPut()
+	//GetLoger().Errorw("test","key1","value")
+	for i:=0;i<10 ;i++  {
+		GetLoger().Infow("测试2","key","test","module","reqlog")
+		time.Sleep(5*time.Second)
+	}
 }
