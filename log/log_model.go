@@ -28,6 +28,10 @@ func (l *Loger)WithError(err error) *Loger {
 	l.WithKV("err",err)
 	return l
 }
+func (l *Loger)WithModule(name string) *Loger {
+	l.WithKV("module",name)
+	return l
+}
 func (l *Loger)handWith(args ...interface{}) *logrus.Entry {
 	if len(l.args) > 0 {
 		args = append(args, l.args...)

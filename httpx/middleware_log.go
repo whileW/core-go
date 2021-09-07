@@ -62,7 +62,7 @@ func EnableGinLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		loger := log.GetLoger()
 		start := time.Now()
-		loger.WithKV("module","reqlog")
+		loger.WithModule("reqlog")
 		loger.WithKV("req_time",start)
 		loger.WithKV("client_ip",c.ClientIP())
 		loger.WithKV("req_method",c.Request.Method)
