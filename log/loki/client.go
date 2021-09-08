@@ -111,7 +111,9 @@ func (rcv *promtailClient) Ping() (*PongResponse, error) {
 func (rcv *promtailClient) Logf(format string, e *logrus.Entry) {
 	labs := map[string]string{}
 	for k,v := range e.Data {
-		labs[k] = fmt.Sprint(v)
+		if len(fmt.Sprint(v)) < 200 {
+			labs[k] = fmt.Sprint(v)
+		}
 	}
 	labs["level"] = e.Level.String()
 	rcv.LogfWithLabels(labs, format)
