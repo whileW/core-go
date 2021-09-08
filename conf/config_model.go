@@ -3,6 +3,8 @@ package conf
 import (
 	"fmt"
 	"github.com/whileW/core-go/utils"
+	"reflect"
+	"strconv"
 )
 
 //todo 手动增加配置   conf.GetConf().Add()|.AddChild()
@@ -94,7 +96,24 @@ func (s *Settings)Get(key string) interface{} {
 	}
 }
 func (s *Settings)GetInt(key string) int {
-	return s.Get(key).(int)
+	tv := s.Get(key)
+	if v,ok := tv.(int);ok{
+		return v
+	}
+	switch reflect.TypeOf(tv).String() {
+	case "string":
+		if v,err := strconv.Atoi(tv.(string));err != nil{
+			panic(err)
+		}else {
+			return v
+		}
+	case "float32":
+		return int(tv.(float32))
+	case "float64":
+		return int(tv.(float64))
+	default:
+		panic("conf.GetInt():err type to int:"+reflect.TypeOf(tv).String())
+	}
 }
 func (s *Settings)GetString(key string) string {
 	return s.Get(key).(string)
@@ -117,7 +136,29 @@ func (s *Settings)Getd(key string,d interface{})interface{} {
 	}
 }
 func (s *Settings)GetIntd(key string,d int) int {
-	return s.Getd(key,d).(int)
+	tv := s.Get(key)
+	var v int
+	var ok bool
+	if v,ok = tv.(int);!ok{
+		switch reflect.TypeOf(tv).String() {
+		case "string":
+			if sv,err := strconv.Atoi(tv.(string));err != nil{
+				return d
+			}else {
+				v = sv
+			}
+		case "float32":
+			v = int(tv.(float32))
+		case "float64":
+			v =  int(tv.(float64))
+		default:
+			return d
+		}
+	}
+	if v == 0 {
+		 return d
+	}
+	return v
 }
 func (s *Settings)GetStringd(key string,d string) string {
 	v := s.Getd(key,d).(string)

@@ -1,6 +1,7 @@
 package conf
 
 import (
+	"fmt"
 	"strconv"
 	"strings"
 )
@@ -14,6 +15,7 @@ func InitConfg() *Config {
 	initEnv(&conf)
 	//命令行加载配置
 	//initCommand(&conf)
+	fmt.Println("read confg from "+conf.SysSetting.ConfFrom)
 	switch conf.SysSetting.ConfFrom {
 	case "file":
 		//配置文件
