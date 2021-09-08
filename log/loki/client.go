@@ -111,7 +111,7 @@ func (rcv *promtailClient) Ping() (*PongResponse, error) {
 func (rcv *promtailClient) Logf(format string, e *logrus.Entry) {
 	labs := map[string]string{}
 	for k,v := range e.Data {
-		if len(fmt.Sprint(v)) < 200 {
+		if len(fmt.Sprint(v)) <= 200 {
 			labs[k] = fmt.Sprint(v)
 		}
 	}
