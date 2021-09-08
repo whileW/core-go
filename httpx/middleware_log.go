@@ -110,6 +110,6 @@ func EnableGinLog() gin.HandlerFunc {
 		//处理时间
 		loger.WithDuration(start)
 
-		loger.Infow("req_log")
+		loger.Infow("reqlog")
 	}
 }
