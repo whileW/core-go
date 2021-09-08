@@ -17,7 +17,7 @@ func RecoverHandler(c *gin.Context) {
 			buf := make([]byte, size)
 			buf = buf[:runtime.Stack(buf, false)]
 			httprequest, _ := httputil.DumpRequest(c.Request, false)
-			log.GetLoger().Errorw("http_panic","module","panic","err",err,"request",httprequest,"stack",string(buf))
+			log.GetLoger().Errorw("http_panic","module","panic","err",err,"request",string(httprequest),"stack",string(buf))
 			//log.Error(pnc)
 			c.AbortWithStatusJSON(500,err)
 		}
