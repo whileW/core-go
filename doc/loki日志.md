@@ -6,5 +6,6 @@ docker run -v /opt/loki/config:/mnt/config -p 3100:3100 --name loki -d grafana/l
 
 ## 配置
 ```
+{"log":{"loki":true}}
 {"loki":{"addr":"http://127.0.0.1:3100"}}
 ```
