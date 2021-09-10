@@ -12,16 +12,19 @@ import (
 
 //自动查找配置文件--自动上面三级查找配置文件
 func initFile(config *Config) {
-	conf_file_path := utils.IF(os.Getenv("CFNAME") == "", "config.yaml", os.Getenv("CFNAME")).(string)
+	conf_file_name := utils.IF(os.Getenv("CFNAME") == "", "config", os.Getenv("CFNAME")).(string)
+	conf_file_type := utils.IF(os.Getenv("CFTYPE") == "", "yaml", os.Getenv("CFNAME")).(string)
 
 	v := viper.New()
-	v.SetConfigFile(conf_file_path)
-	v.AddConfigPath("./"+conf_file_path)
-	v.AddConfigPath("../"+conf_file_path)
-	v.AddConfigPath("../../"+conf_file_path)
-	v.AddConfigPath("../../../"+conf_file_path)
+	v.SetConfigName(conf_file_name)
+	v.SetConfigType(conf_file_type)
+	//v.AddConfigPath("../")
+	v.AddConfigPath("../")
+	v.AddConfigPath("../../")
+	v.AddConfigPath("../../../")
 	err := v.ReadInConfig()
 	if err != nil {
+		panic(fmt.Errorf("Fatal error config file: %v \n", err))
 		fmt.Println(fmt.Sprintf("Fatal error config file: %v \n", err))
 		return
 	}

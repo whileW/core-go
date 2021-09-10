@@ -2,7 +2,6 @@ package conf
 
 import (
 	"fmt"
-	"github.com/whileW/core-go/utils"
 	"reflect"
 	"strconv"
 )
@@ -161,8 +160,19 @@ func (s *Settings)GetIntd(key string,d int) int {
 	return v
 }
 func (s *Settings)GetStringd(key string,d string) string {
-	v := s.Getd(key,d).(string)
-	return utils.IF(v == "",d,v).(string)
+	tv := s.Getd(key,d)
+	var v string
+	var ok bool
+	if v,ok = tv.(string);!ok {
+		switch reflect.TypeOf(tv).String() {
+		case "int":
+			v = strconv.Itoa(tv.(int))
+		}
+	}
+	if v == "" {
+		return d
+	}
+	return v
 }
 func (s *Settings)GetBoold(key string,d bool) bool {
 	return s.Getd(key,d).(bool)
