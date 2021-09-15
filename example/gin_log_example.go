@@ -6,7 +6,6 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/whileW/core-go/conf"
 	"github.com/whileW/core-go/httpx"
-	"github.com/whileW/core-go/log"
 	"net/http"
 	"time"
 )
@@ -45,8 +44,13 @@ func (s *Server) Close() {
 }
 
 func main()  {
-	server := New()
-	log.SetPrometheusOutPut(server.router.Group(""))
+	s := New()
+	s.router.GET("ok", func(c *gin.Context) {
+		httpx.Ok(c)
+	})
+	s.router.GET("ok/with_data", func(c *gin.Context) {
+		httpx.OkWithData(c,"data")
+	})
 	for {
 		select {}
 	}

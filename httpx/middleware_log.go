@@ -66,8 +66,8 @@ func EnableGinLog() gin.HandlerFunc {
 		loger.WithKV("req_time",start)
 		loger.WithKV("client_ip",c.ClientIP())
 		loger.WithKV("req_method",c.Request.Method)
-		loger.WithKV("req_path",c.Request.RequestURI)
-
+		loger.WithKV("req_path",c.Request.URL.Path)
+		loger.WithKV("req_para",c.Request.RequestURI)
 		//clone req body
 		if d,err := ioutil.ReadAll(c.Request.Body);err == nil {
 			c.Set("req_body_log",d)

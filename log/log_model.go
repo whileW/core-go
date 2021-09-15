@@ -1,6 +1,7 @@
 package log
 
 import (
+	"fmt"
 	"github.com/sirupsen/logrus"
 	"strconv"
 	"time"
@@ -20,8 +21,7 @@ func (l *Loger)WithKV(args ...interface{}) *Loger {
 }
 func (l *Loger)WithDuration(start time.Time) *Loger {
 	over := time.Now()
-	latency := over.Sub(start)
-	l.WithKV("duration",latency)
+	l.WithKV("duration",fmt.Sprint(over.Sub(start)))
 	return l
 }
 func (l *Loger)WithError(err error) *Loger {
