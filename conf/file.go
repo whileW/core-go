@@ -18,7 +18,7 @@ func initFile(config *Config) {
 	v := viper.New()
 	v.SetConfigName(conf_file_name)
 	v.SetConfigType(conf_file_type)
-	//v.AddConfigPath("../")
+	v.AddConfigPath("./")
 	v.AddConfigPath("../")
 	v.AddConfigPath("../../")
 	v.AddConfigPath("../../../")
