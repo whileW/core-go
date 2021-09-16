@@ -87,12 +87,25 @@ type Setting struct {
 	change_chan 	[]chan int
 }
 
+func Set(key string,v interface{})  {
+	conf.Setting.Set(key,v)
+}
+func (s *Settings)Set(key string,v interface{})  {
+	(*s)[key] = Setting{Key:key,Value:v}
+}
+
+func Get(key string) interface{} {
+	return conf.Setting.Get(key)
+}
 func (s *Settings)Get(key string) interface{} {
 	if v, ok := (*s)[key]; ok {
 		return v.Value
 	} else {
 		panic("key not find")
 	}
+}
+func GetInt(key string) int {
+	return conf.Setting.GetInt(key)
 }
 func (s *Settings)GetInt(key string) int {
 	tv := s.Get(key)
@@ -114,16 +127,28 @@ func (s *Settings)GetInt(key string) int {
 		panic("conf.GetInt():err type to int:"+reflect.TypeOf(tv).String())
 	}
 }
+func GetString(key string) string {
+	return conf.Setting.GetString(key)
+}
 func (s *Settings)GetString(key string) string {
 	return s.Get(key).(string)
 }
+func GetBool(key string) bool {
+	return conf.Setting.GetBool(key)
+}
 func (s *Settings)GetBool(key string) bool {
 	return s.Get(key).(bool)
+}
+func GetChild(key string) *Settings {
+	return conf.Setting.GetChild(key)
 }
 func (s *Settings)GetChild(key string) *Settings {
 	return s.Get(key).(*Settings)
 }
 
+func Getd(key string,d interface{}) interface{} {
+	return conf.Setting.Getd(key,d)
+}
 func (s *Settings)Getd(key string,d interface{})interface{} {
 	if s == nil {
 		return d
@@ -133,6 +158,9 @@ func (s *Settings)Getd(key string,d interface{})interface{} {
 	} else {
 		return d
 	}
+}
+func GetIntd(key string,d int) int {
+	return conf.Setting.GetIntd(key,d)
 }
 func (s *Settings)GetIntd(key string,d int) int {
 	tv := s.Get(key)
@@ -159,6 +187,9 @@ func (s *Settings)GetIntd(key string,d int) int {
 	}
 	return v
 }
+func GetStringd(key string,d string) string {
+	return conf.Setting.GetStringd(key,d)
+}
 func (s *Settings)GetStringd(key string,d string) string {
 	tv := s.Getd(key,d)
 	var v string
@@ -174,8 +205,14 @@ func (s *Settings)GetStringd(key string,d string) string {
 	}
 	return v
 }
+func GetBoold(key string,d bool) bool {
+	return conf.Setting.GetBoold(key,d)
+}
 func (s *Settings)GetBoold(key string,d bool) bool {
 	return s.Getd(key,d).(bool)
+}
+func GetChildd(key string) *Settings {
+	return conf.Setting.GetChildd(key)
 }
 func (s *Settings)GetChildd(key string) *Settings {
 	v := s.Getd(key,nil)
@@ -185,6 +222,9 @@ func (s *Settings)GetChildd(key string) *Settings {
 	return v.(*Settings)
 }
 
+func Getd_c(key string,d interface{}) (interface{},chan int) {
+	return conf.Setting.Getd_c(key,d)
+}
 func (s *Settings)Getd_c(key string,d interface{})(interface{},chan int) {
 	var value interface{}
 	change_chan := make(chan int)
@@ -200,17 +240,29 @@ func (s *Settings)Getd_c(key string,d interface{})(interface{},chan int) {
 	}
 	return value,change_chan
 }
+func GetIntd_c(key string,d int) (int,chan int) {
+	return conf.Setting.GetIntd_c(key,d)
+}
 func (s *Settings)GetIntd_c(key string,d int) (int,chan int) {
 	v,ch := s.Getd_c(key,d)
 	return v.(int),ch
+}
+func GetStringd_c(key string,d string) (string,chan int) {
+	return conf.Setting.GetStringd_c(key,d)
 }
 func (s *Settings)GetStringd_c(key string,d string) (string,chan int) {
 	v,ch := s.Getd_c(key,d)
 	return v.(string),ch
 }
+func GetBoold_c(key string,d bool) (bool,chan int) {
+	return conf.Setting.GetBoold_c(key,d)
+}
 func (s *Settings)GetBoold_c(key string,d bool) (bool,chan int) {
 	v,ch := s.Getd_c(key,d)
 	return v.(bool),ch
+}
+func GetChildd_c(key string) (*Settings,chan int) {
+	return conf.Setting.GetChildd_c(key)
 }
 func (s *Settings)GetChildd_c(key string) (*Settings,chan int) {
 	v,ch := s.Getd_c(key,nil)
