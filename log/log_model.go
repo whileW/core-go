@@ -32,6 +32,14 @@ func (l *Loger)WithModule(name string) *Loger {
 	l.WithKV("module",name)
 	return l
 }
+func (l *Loger)WithModule_ApiReq() *Loger {
+	l.WithModule("api_req_log")
+	return l
+}
+func (l *Loger)WithModule_Db() *Loger {
+	l.WithModule("db_log")
+	return l
+}
 func (l *Loger)handWith(args ...interface{}) *logrus.Entry {
 	if len(l.args) > 0 {
 		args = append(args, l.args...)
