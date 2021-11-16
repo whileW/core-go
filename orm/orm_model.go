@@ -24,6 +24,9 @@ func (m *Orm)Set(name string,db *gorm.DB)  {
 	m.dbs[name] = db
 }
 func (m *Orm)Get(name string) *gorm.DB {
+	if name == "" {
+		name = conf.GetConf().SysSetting.SystemName
+	}
 	if v,ok := m.dbs[name];ok {
 		if conf.GetConf().SysSetting.Env != "release" {
 			v = v.Debug()
