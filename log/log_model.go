@@ -2,6 +2,7 @@ package log
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/sirupsen/logrus"
 	"strconv"
 	"time"
@@ -38,6 +39,11 @@ func (l *Loger)WithModule_ApiReq() *Loger {
 }
 func (l *Loger)WithModule_Db() *Loger {
 	l.WithModule("db_log")
+	return l
+}
+
+func (l *Loger)WithReqId(c *gin.Context) *Loger {
+	l.WithKV("req_id",c.MustGet("req_id").(string))
 	return l
 }
 func (l *Loger)handWith(args ...interface{}) *logrus.Entry {

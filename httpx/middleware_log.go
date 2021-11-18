@@ -3,6 +3,7 @@ package httpx
 import (
 	"bytes"
 	"github.com/gin-gonic/gin"
+	"github.com/google/uuid"
 	"github.com/whileW/core-go/log"
 	"io/ioutil"
 	"time"
@@ -56,18 +57,25 @@ func DisableRespBodyLog() gin.HandlerFunc {
 	}
 }
 
+func GetGinContextReqId(c *gin.Context) string {
+	return c.MustGet("req_id").(string)
+}
+
 //gin请求日志中间件
 //todo req_id
 func EnableGinLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		loger := log.GetLoger()
 		start := time.Now()
+		req_id := uuid.New().String()
+		c.Set("req_id",req_id)
 		loger.WithModule("reqlog")
 		loger.WithKV("req_time",start)
 		loger.WithKV("client_ip",c.ClientIP())
 		loger.WithKV("req_method",c.Request.Method)
 		loger.WithKV("req_path",c.Request.URL.Path)
 		loger.WithKV("req_para",c.Request.RequestURI)
+		loger.WithReqId(c)
 		//clone req body
 		if d,err := ioutil.ReadAll(c.Request.Body);err == nil {
 			c.Set("req_body_log",d)
