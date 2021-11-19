@@ -14,8 +14,8 @@ go get github.com/whileW/core-go
   - [从 nacos 配置中心 读取配置](#从nacos配置中心读取配置)
 - [grpc](#grpc)
 - httpx：req、resp封装，自动保存请求日志
-- log：file、loki
-- orm：基于配置自动初始化orm实例
+- [log：日志](#log)
+- [orm：基于配置自动初始化orm实例](#orm)
 
 
 ### 配置
@@ -71,6 +71,8 @@ https://github.com/nacos-group/nacos-docker
 
 ### grpc
 ```
+code: grpc/traefik.go
+
 针对小型应用降低grpc使用成本
 --利用traefik网关完成类似服务发现、服务注册
 
@@ -99,4 +101,54 @@ conn, err := grpc.Dial(grpc2.GetTraefikTarget(GrpcName), grpc.WithInsecure(),grp
       [http.services.product_grpc.loadBalancer]
         [[http.services.product_grpc.loadBalancer.servers]]
           url = "h2c://127.0.0.1:30011"
+```
+
+
+### orm
+```
+code: orm/*
+会自动根据配置生成gorm实例
+
+使用：
+orm.GetOrm().Get(DBName)
+```
+配置格式:
+```
+DB:
+  MYSQL:
+    process:
+      username: root
+      password: root
+      path: 127.0.0.1:3306
+      db_name: process_test
+      config: charset=utf8&parseTime=True&loc=Local
+      max-idle-conns: 50
+      max-open-conns: 50
+      log_mode: true
+    user:
+      username: root
+      password: root
+      path: 127.0.0.1:3306
+      db_name: process_test
+```
+
+### log
+```
+code: log/*
+
+if ENV == "debug" 
+   开启控制台日志输出
+else
+   关闭控制台日志输出
+   
+配置使用loki保存日志
+增加配置：
+{"log":{"loki":true}}
+{"loki":{"addr":"http://127.0.0.1:3100"}}
+
+file输出配置--暂未实现
+```
+使用：
+```
+log.GetLoger().Errorw("msg",arg...)
 ```
