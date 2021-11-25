@@ -7,6 +7,7 @@ import (
 	"github.com/nacos-group/nacos-sdk-go/clients/config_client"
 	"github.com/nacos-group/nacos-sdk-go/common/constant"
 	"github.com/nacos-group/nacos-sdk-go/vo"
+	"github.com/whileW/core-go/nacos"
 	"github.com/whileW/core-go/utils"
 	"os"
 	"runtime"
@@ -15,10 +16,11 @@ import (
 func initNacos(config *Config) {
 	var (
 		data_id = utils.IF(os.Getenv("NACOSDATAID") == "",config.SysSetting.SystemName,os.Getenv("NACOSDATAID")).(string)
-		server_addr = os.Getenv("NACOSADDR")
-		env     = utils.IF(config.SysSetting.Env != "release","debug",config.SysSetting.Env).(string)
 	)
-	c := get_nacos_client(server_addr)
+	c,err := nacos.GetConfigClient()
+	if err != nil {
+		panic(fmt.Sprintf("初始化nacos config client异常:%v",err))
+	}
 
 	var changeData = func(confContent string) {
 		s := map[string]interface{}{}
@@ -32,7 +34,7 @@ func initNacos(config *Config) {
 
 	if err := c.ListenConfig(vo.ConfigParam{
 		DataId:data_id,
-		Group:env,
+		Group:config.SysSetting.Env,
 		OnChange: func(namespace, group, dataId, data string) {
 			changeData(data)
 		},
@@ -42,7 +44,7 @@ func initNacos(config *Config) {
 	//初始化获取配置
 	content,err := c.GetConfig(vo.ConfigParam{
 		DataId:data_id,
-		Group:env,
+		Group:config.SysSetting.Env,
 	})
 	if err != nil {
 		panic(fmt.Sprintf("获取nacos配置失败:%v",err))
