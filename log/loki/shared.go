@@ -1,5 +1,7 @@
 package loki
 
+import "strings"
+
 func copyLabels(src map[string]string) map[string]string {
 	dst := make(map[string]string, len(src))
 	for i := range src {
@@ -22,7 +24,7 @@ func copyAndMergeLabels(srcs ...map[string]string) map[string]string {
 
 	for i := range srcs {
 		for key := range srcs[i] {
-			dst[key] = srcs[i][key]
+			dst[strings.ReplaceAll(key,"-","_")] = srcs[i][key]
 		}
 	}
 
