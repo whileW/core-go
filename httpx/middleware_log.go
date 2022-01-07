@@ -67,8 +67,6 @@ func EnableGinLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
 		loger := log.GetLoger()
 		start := time.Now()
-		req_id := uuid.New().String()
-		c.Set("req_id",req_id)
 		loger.WithModule("reqlog")
 		loger.WithKV("req_time",start)
 		loger.WithKV("client_ip",c.ClientIP())
@@ -119,5 +117,12 @@ func EnableGinLog() gin.HandlerFunc {
 		loger.WithDuration(start)
 
 		loger.Infow("reqlog")
+	}
+}
+func Middleware_SetReqId() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		req_id := uuid.New().String()
+		c.Set("req_id",req_id)
+		c.Writer.Header().Add("req_id",req_id)
 	}
 }

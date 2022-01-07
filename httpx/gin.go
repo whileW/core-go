@@ -12,7 +12,7 @@ func NewGin() *gin.Engine {
 	//开启gin
 	r := gin.New()
 	// 请求日志记录
-	r.Use(EnableGinLog())
+	r.Use(Middleware_SetReqId(),EnableGinLog())
 	// 跨域
 	r.Use(Cors())
 	//捕获异常
