@@ -115,3 +115,8 @@ func (l *Loger)Warnw(msg string, keysAndValues ...interface{})  {
 func (l *Loger)Warn(args ...interface{})  {
 	logrus.Warn(args...)
 }
+
+func (l *Loger)Copy() *Loger {
+	l2 := *l
+	return &l2
+}

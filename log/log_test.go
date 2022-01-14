@@ -29,3 +29,10 @@ func TestSetLokiOutPut(t *testing.T) {
 		time.Sleep(5*time.Second)
 	}
 }
+func TestLoger_Copy(t *testing.T) {
+	l := GetLoger().WithKV("key","test1")
+	l2 := l.Copy()
+	l.WithKV("key2","test2")
+	l2.Infow("测试2")
+	l.Infow("测试")
+}

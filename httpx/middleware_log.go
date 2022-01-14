@@ -2,6 +2,7 @@ package httpx
 
 import (
 	"bytes"
+	"fmt"
 	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/whileW/core-go/log"
@@ -116,7 +117,7 @@ func EnableGinLog() gin.HandlerFunc {
 		//处理时间
 		loger.WithDuration(start)
 
-		loger.Infow("reqlog")
+		loger.Infow(fmt.Sprintf("%s %s %d req_id=%s",c.Request.Method,c.Request.RequestURI,c.Writer.Status(),c.MustGet("req_id").(string)))
 	}
 }
 func Middleware_SetReqId() gin.HandlerFunc {
