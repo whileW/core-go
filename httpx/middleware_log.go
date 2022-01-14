@@ -66,7 +66,7 @@ func GetGinContextReqId(c *gin.Context) string {
 //todo req_id
 func EnableGinLog() gin.HandlerFunc {
 	return func(c *gin.Context) {
-		loger := log.GetLoger()
+		loger := get_and_set_context_loger(c)
 		start := time.Now()
 		loger.WithModule("reqlog")
 		loger.WithKV("req_time",start)
@@ -126,4 +126,13 @@ func Middleware_SetReqId() gin.HandlerFunc {
 		c.Set("req_id",req_id)
 		c.Writer.Header().Add("req_id",req_id)
 	}
+}
+
+func get_and_set_context_loger(c *gin.Context) *log.Loger {
+	loger := log.GetLoger()
+	c.Set("loger",loger)
+	return loger
+}
+func AppendReqLog(c *gin.Context,k string,v interface{})  {
+	c.MustGet("loger").(*log.Loger).WithKV(k,v)
 }
