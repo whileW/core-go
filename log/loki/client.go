@@ -87,7 +87,7 @@ type clientOption func(c *promtailClient)
 type packedLogEntry struct {
 	level    logrus.Level
 	labels   map[string]string
-	logEntry *LogEntry
+	logEntry []*LogEntry
 }
 
 type promtailClient struct {
@@ -109,28 +109,34 @@ func (rcv *promtailClient) Ping() (*PongResponse, error) {
 	return rcv.exchanger.Ping()
 }
 func (rcv *promtailClient) Logf(format string, e *logrus.Entry) {
+	formats := []string{format}
 	labs := map[string]string{}
 	for k,v := range e.Data {
 		if len(fmt.Sprint(v)) <= 200 {
 			labs[k] = fmt.Sprint(v)
+		}else {
+			formats = append(formats, k+"="+fmt.Sprint(v))
 		}
 	}
 	labs["level"] = e.Level.String()
-	rcv.LogfWithLabels(labs, format)
+	rcv.LogfWithLabels(labs, formats)
 }
-func (rcv *promtailClient) LogfWithLabels(labels map[string]string, format string) {
+func (rcv *promtailClient) LogfWithLabels(labels map[string]string, format []string) {
 	if rcv.isStopped { // Escape from endless lock
 		log.Println("promtail client is stopped, no log entries will be sent!")
 		return
 	}
-	rcv.queue <- packedLogEntry{
+	e := packedLogEntry{
 		labels: copyLabels(labels),
 		//level:  level,
-		logEntry: &LogEntry{
-			Timestamp: time.Now(),
-			Format:    format,
-		},
 	}
+	for _,t := range format {
+		e.logEntry = append(e.logEntry, &LogEntry{
+			Timestamp: time.Now(),
+			Format:    t,
+		})
+	}
+	rcv.queue <- e
 }
 
 func (rcv *promtailClient) Close() {
@@ -222,7 +228,7 @@ func (rcv *logStreamBatch) add(entry packedLogEntry) {
 	//cachedIndex := entry.level
 
 	dedicatedStream := newLeveledStream(entry.labels,rcv.predefinedLabels)
-	dedicatedStream.Entries = []*LogEntry{entry.logEntry}
+	dedicatedStream.Entries = entry.logEntry
 	rcv.streams = append(rcv.streams, dedicatedStream)
 
 	//// For both use cases (custom labels and unknown log level we would add entry in a separate stream)

@@ -3,6 +3,7 @@ package loki
 import (
 	"fmt"
 	"github.com/sirupsen/logrus"
+	"time"
 )
 
 type PromtailHook struct {
@@ -33,11 +34,11 @@ func (rcv *PromtailHook) Fire(entry *logrus.Entry) error {
 		return fmt.Errorf("log entry is nil")
 	}
 
-	line, err := entry.String()
-	if err != nil {
-		return fmt.Errorf("unable to read log entry: %s", err)
-	}
-	rcv.client.Logf(line,entry)
+	//line, err := entry.String()
+	//if err != nil {
+	//	return fmt.Errorf("unable to read log entry: %s", err)
+	//}
+	rcv.client.Logf(time.Now().Format("2006-01-02 15:04:05")+" "+entry.Message,entry)
 
 	return nil
 }

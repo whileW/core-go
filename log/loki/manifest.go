@@ -4,7 +4,7 @@ import "github.com/sirupsen/logrus"
 
 type Client interface {
 	Logf(format string, e *logrus.Entry)
-	LogfWithLabels(labels map[string]string, format string)
+	LogfWithLabels(labels map[string]string, format []string)
 
 	Ping() (*PongResponse, error)
 	Close()
