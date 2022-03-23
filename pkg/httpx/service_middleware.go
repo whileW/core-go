@@ -1,14 +1,28 @@
 package httpx
 
 import (
+	"bytes"
 	"fmt"
+	"github.com/gin-gonic/gin"
 	"github.com/google/uuid"
 	"github.com/whileW/core-go/utils"
+	"io/ioutil"
 	"net/http"
 	"runtime"
+	"time"
 )
 
-func CORS(c *ServiceContext)  {
+func setServiceContext() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		ctx := NewServiceContext(c)
+		c.Set("serviceContext",ctx)
+	}
+}
+func getServiceContext(c *gin.Context) *ServiceContext {
+	return c.MustGet("serviceContext").(*ServiceContext)
+}
+
+func Middleware_CORS(c *ServiceContext)  {
 	method := c.Request.Method
 	origin := c.GetHeader("Origin")
 	c.Header("Access-Control-Allow-Origin", utils.IF(origin == "", "*", origin).(string))
@@ -24,7 +38,7 @@ func CORS(c *ServiceContext)  {
 	// 处理请求
 	c.Next()
 }
-func RecoverHandler(ctx *ServiceContext) {
+func Middleware_RecoverHandler(ctx *ServiceContext) {
 	defer func() {
 		if err := recover(); err != nil {
 			const size = 64 << 10
@@ -36,11 +50,51 @@ func RecoverHandler(ctx *ServiceContext) {
 	}()
 	ctx.Next()
 }
-func UserTraceId(ctx *ServiceContext)  {
+func Middleware_UserTraceId(ctx *ServiceContext)  {
 	user_trace_id,_ := ctx.Cookie("user_trace_id")
 	if user_trace_id == "" {
 		user_trace_id = uuid.New().String()
 		ctx.SetCookie("user_trace_id", user_trace_id, 12*60*60, "/", "", false, true)
 	}
 	ctx.SetPubLoger("user_trace_id",user_trace_id)
+}
+const (
+	//最大打印gin resp_body长度  1mb
+	MAX_PRINT_GIN_RESP_BODY_LEN  	=  1048576
+	//最大打印gin req_body 长度
+	MAX_PRINT_GIN_REQ_BODY_LEN		=	1048576
+)
+func Middleware_ReqLog(ctx *ServiceContext)  {
+	//loger := ctx.GetReqLoger()
+	var (
+		req_time = time.Now()
+		client_ip = ctx.ClientIP()
+		method = ctx.Request.Method
+		path = ctx.Request.RequestURI
+	)
+
+	//clone req body
+	if d,err := ioutil.ReadAll(ctx.Request.Body);err == nil {
+		ctx.Set("req_body_log",d)
+		ctx.Request.Body = ioutil.NopCloser(bytes.NewReader(d))
+	}
+
+	ctx.Next()
+
+	loger := ctx.GetLoger().WithModule("req_log")
+	loger.WithKV("req_time",req_time,"client_ip",client_ip,"method",method,"path",path)
+
+	if v,ok := ctx.Get("disable_req_body_log"); !ok || v.(string) != "1" {
+		req_body := ctx.MustGet("req_body_log").([]byte)
+		if len(req_body) <= MAX_PRINT_GIN_REQ_BODY_LEN {
+			loger.WithKV("req_body",string(req_body))
+		}
+	}
+
+	loger.WithKV("resp_status_code",ctx.Writer.Status())
+
+	//处理时间
+	loger.WithDuration(req_time)
+
+	loger.Info(fmt.Sprintf("%s %s %d",method,ctx.Request.RequestURI,ctx.Writer.Status()))
 }

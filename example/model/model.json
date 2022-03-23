@@ -1,0 +1,19 @@
+[{
+  "tableName":"user",
+  "fields":[{
+    "name":"uuid",
+    "type":"uuid",
+    "comment":"uuid"
+  },{
+    "name":"name",
+    "type":"string",
+    "size":256,
+    "comment":"用户名称"
+  },{
+    "name":"age",
+    "type":"int",
+    "comment":"用户年龄"
+  }],
+  "isDisableBaseModel":false,
+  "isNeedUUID":true
+}]
